@@ -21,6 +21,8 @@ source("keys/ydn_keys.R")
 myloc <- find_place("Barrows Hall, Berkeley,ca",key=mykey,secret=mysecret)
 myloc #see what was returned
 
+# TO interpret response see: https://developer.yahoo.com/boss/geo/docs/supported_responses.html
+
 #convert strings to numerics
 myloc$longitude <- as.numeric(myloc$longitude)
 myloc$latitude <- as.numeric(myloc$latitude)
