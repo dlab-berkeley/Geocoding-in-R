@@ -1,0 +1,44 @@
+---
+title: "RGeocoding"
+author: "patty"
+date: "December 4, 2015"
+output: slidy_presentation
+---
+
+## Geocoding in R
+
+Getting Started: Download the zipfile for this tutorial from
+<http://rmarkdown.rstudio.com>.
+
+
+
+## Overview
+
+- What is Geocoding
+- How to Geocode
+- Now what
+
+## What is Geocoding
+
+Determine the geographic coordinates of a named place, address, or code.
+
+- city, building, 
+- street address, intersection, 
+- mountain, landmark,
+- crime or other event location,
+- zip code, etc.
+
+## 
+
+## slide with R code
+
+```{r}
+summary(cars)
+```
+
+## Slide with Plot
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
