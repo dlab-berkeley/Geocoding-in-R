@@ -8,19 +8,25 @@ output: slidy_presentation
 ## Geocoding in R
 
 Getting Started: Download the zipfile for this tutorial from
-<http://rmarkdown.rstudio.com>.
+https://github.com/dlab-geo/RGeocoding/archive/master.zip
 
 
 
 ## Overview
 
 - What is Geocoding
-- How to Geocode
+- A simple example in Google Maps
+- Why Geocode
+- Geocoding in Detail
+- How to Geocode in R
+    - with GGMAPS
+    - with Yahoo Placefinder
+    - with TIGER
 - Now what
 
 ## What is Geocoding
 
-Determine the geographic coordinates of a named place, address, or code.
+Determine the geographic coordinates of a named place, street address, or zip code.
 
 - city, building, 
 - street address, intersection, 
@@ -28,15 +34,103 @@ Determine the geographic coordinates of a named place, address, or code.
 - crime or other event location,
 - zip code, etc.
 
-## 
+## Try It!
 
-## slide with R code
+![Barrows in Google Maps](screenshots/gmap_barrows.png)
 
-```{r}
-summary(cars)
+maps.google.com
+
+## Geographic Coordinates
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Latitude_and_Longitude_of_the_Earth.svg/2000px-Latitude_and_Longitude_of_the_Earth.svg.png" alt="lonlat" style="width:450px;">
+
+||
+------------------------|-----------------------------------|-
+**Latitude**|+/- 90 degrees|*how far north or south of equator*
+**Longitude**|+/- 180 degrees|*how far E/W of prime meridian*
+
+**Decimal Degrees (DD)**  
+37.870145, -122.25952
+
+**Degrees, minutes, seconds (DMS)**  
+37° 52' 12"N, 122° 15' 36" W
+
+
+## Why?
+
+- Display locations on a map
+- Link locations to other data
+- Spatial analysis
+    - Calculate distance, direction, area, etc.
+    - Identify patterns & relationships:
+        - clusters, outliers, neighbors
+
+## Address Geocoding
+
+## Where do Addresses come from
+
+- Extract from text documents
+- File or Database
+- Web Scraping
+
+## Process
+
+![geocoding_details](screenshots/geocoding_details1.png)
+
+## Evaluation
+
+Reference database extremeley important
+
+![geocoding_details2](screenshots/geocoding_details2.png)
+
+## Geocoder Output Comparison
+
+![geocoding_details2](screenshots/output_compare.png)
+
+## Considerations
+
+- Geographic scope
+- Time period
+- Output Quality
+- Number of addresses
+- Data Privacy/security
+- Cost
+
+## Local Geocoding
+- ArcGIS
+
+## Remote Geocoding
+ArcGIS
+Google
+Yahoo
+OpenStreetMaps
+Data Science Toolkit (DSTK)
+*and many others*
+
+## Geocoding in R
+
+Access an online Geocoder using an API
+*Application Progromming Toolkit*
+
+In R via a package or script.
+
+## Geocoding in R with
+
+- GGMAPS
+    - Google
+    - DSTK
+- RYDN & Yahoo
+- TIGER
+
+## Geocoding with GGMAPS
+```{r, eval=FALSE}
+library(ggmaps)
+
 ```
+##
 
-## Slide with Plot
+
+
 
 ```{r, echo=FALSE}
 plot(cars)

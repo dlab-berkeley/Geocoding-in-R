@@ -1,0 +1,36 @@
+Layout {
+  FileType : "delimited"
+  Delimiter : ","
+  Street : "2"
+  City : "3"
+  State : "4"
+  Zip : "5"
+  SkipRows : "1"
+  TextCodec : "ISO-8859-1"
+  FieldDefinitions {
+    0 {
+      Name : "ID"
+      Type : "int"
+    }
+    1 {
+      Name : "Store"
+      Type : "string"
+    }
+    2 {
+      Name : "Street"
+      Type : "string"
+    }
+    3 {
+      Name : "City"
+      Type : "string"
+    }
+    4 {
+      Name : "State"
+      Type : "string"
+    }
+    5 {
+      Name : "Zip"
+      Type : "string"
+    }
+  }
+}
