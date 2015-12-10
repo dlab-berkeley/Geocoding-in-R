@@ -14,10 +14,19 @@ geocode(location="7305 Edgewater Dr #D Oakland CA 94621", source="google")
 geocode(location="7305 Edgewater Dr Oakland CA 94621", source="google")
 geocode(location="7305 Edgewater Dr Oakland CA 94621", source="google", output="latlona")
 geocode(location="7305 Edgewater Dr Oakland CA 94621", source="google", output="more")
+
+one <- geocode(location="7305 Edgewater Dr Oakland CA 94621", source="google", output="more")
+two <- geocode("sather gate, berkeley, ca", source="google", output="more", messaging=TRUE)
+three <- geocode("1011 shattuck ave, berkeley ca", source="google", output="all")
+
+one$loctype
+two$loctype
+
+
 #try 
 ?geocode
 
-# Geocoding script for large list of addresses.
+# Geocoding script for large list of addresses
 # get the input data
 data <- read.csv(file="address_data/formatted/oak_liq_w_ids_types_headers.csv",stringsAsFactors=F)
 head(data)
@@ -26,11 +35,16 @@ head(data)
 
 # data[19,8]<-"7305 Edgewater Dr Oakland CA 94621"  ## Why do we need to do this??
 
-mylocs <- geocode(data[,8], output = "latlona", source = "google")
+mylocs <- geocode(data[,8], output = "more", source = "google")
 head(mylocs)
+
 # if you want more output try
-#geocoded_output <- geocode(data[,3], output = "more")
-#write.csv(geocoded_output,file="geocoded_output.csv", row.names=FALSE)
+mylocs_sub <- mylocs[,c(1:4)]
+
+#append geocode results back to input data
+geocoded_data <- data.frame(data,mylocs_sub)
+
+#write.csv(geocoded_data,file="geocoded_data.csv", row.names=FALSE)
 
 #lets plot it
 library(ggplot2)
@@ -47,8 +61,7 @@ ggmap(map) +
   geom_point(aes(x = lon, y = lat), data = mylocs, size = 6, col="red" ) 
 
 
-#TRY
 
+#Scaling up to more than 2500 records
+geocodeQueryCheck() #how am I doing?
 
-#try 
-?geocode

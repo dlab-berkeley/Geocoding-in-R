@@ -1,6 +1,12 @@
 #
 # Geocoding with Tiger Geocoding Service
 #
+# pattyf@berkeley.edu, 12/8/2015
+#
+# Important note:
+## You can only geocode 1000 addresses at a time
+## so need to add code to loop or subset your files
+
 
 #clean environment
 rm(list=ls())

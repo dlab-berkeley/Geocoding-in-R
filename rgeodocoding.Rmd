@@ -1,8 +1,8 @@
 ---
 title: "RGeocoding"
-author: "patty"
+author: "Patty Frontiera"
 date: "December 4, 2015"
-output: slidy_presentation
+output: ioslides_presentation
 ---
 
 ## Geocoding in R
@@ -36,8 +36,7 @@ Determine the geographic coordinates of a named place, street address, or zip co
 
 ## Try It!
 
-![Barrows in Google Maps](screenshots/gmap_barrows.png)
-
+<img src="screenshots/gmap_barrows.png" alt="google maps" style="width:650px;">
 maps.google.com
 
 ## Geographic Coordinates
@@ -56,7 +55,7 @@ maps.google.com
 37° 52' 12"N, 122° 15' 36" W
 
 
-## Why?
+## Why Geocode?
 
 - Display locations on a map
 - Link locations to other data
@@ -65,17 +64,21 @@ maps.google.com
     - Identify patterns & relationships:
         - clusters, outliers, neighbors
 
-## Address Geocoding
+*We will cover the first two*
 
-## Where do Addresses come from
+## Address Geocoding
+<img src="http://beginningandend.com/wp-content/uploads/2012/06/666-Park-Avenue-Banner.jpg" alt="lonlat" style="width:100%;">
+ 
+
+## Where do Addresses come from?
 
 - Extract from text documents
 - File or Database
 - Web Scraping
 
-## Process
+## Process Details
 
-![geocoding_details](screenshots/geocoding_details1.png)
+<img src="screenshots/geocoding_details1.png" alt="geocoding details" style="width:100%;">
 
 ## Evaluation
 
@@ -83,9 +86,11 @@ Reference database extremeley important
 
 ![geocoding_details2](screenshots/geocoding_details2.png)
 
+
 ## Geocoder Output Comparison
 
-![geocoding_details2](screenshots/output_compare.png)
+<img src="screenshots/output_compare.png" alt="geocoding compare" style="width:100%;">
+ 
 
 ## Considerations
 
@@ -95,44 +100,451 @@ Reference database extremeley important
 - Number of addresses
 - Data Privacy/security
 - Cost
+- ease of use
 
 ## Local Geocoding
-- ArcGIS
 
-## Remote Geocoding
-ArcGIS
-Google
-Yahoo
-OpenStreetMaps
-Data Science Toolkit (DSTK)
-*and many others*
+ESRI ArcGIS with local reference database
+
+- Benefits
+    - highly customizable
+    - fast & robust software
+    - easy to use GUI
+
+- Issues
+    - free reference database circa 2009
+    - limited to USA & Canada
+    
+## Remote Geocoding Services
+
+- ArcGIS Online
+- Google
+- Yahoo
+- OpenStreetMaps
+- Data Science Toolkit (DSTK)
+- *and many others*
 
 ## Geocoding in R
 
 Access an online Geocoder using an API
 *Application Progromming Toolkit*
 
-In R via a package or script.
+- Via a package or script
+
 
 ## Geocoding in R with
 
 - GGMAPS
     - Google
     - DSTK
-- RYDN & Yahoo
-- TIGER
 
-## Geocoding with GGMAPS
-```{r, eval=FALSE}
-library(ggmaps)
+- RYDN & Yahoo Placefinder
 
-```
-##
+- US Census TIGER Geocoding Service
+
+## Geocoding with GGMAP
+- Created by David Kahle and Hadley Wickham, ggplot2 developer
 
 
+- Includes functions for Geocoding using:
+    - the Data Science Toolkit (DSTK) geocoding service 
+     - Google's Geocoding service
 
 
-```{r, echo=FALSE}
-plot(cars)
-```
+- Also has functionality for fetching map data from Google and other online services
+    - you can use these with your data to create custom maps
+
+        
+## Geocoding with GGMAP
+
+- The Data Science Toolkit (DSTK) geocoding service 
+    - default, unlimited usage
+    - FOSS: free and open source softare (& data)
+    - good, not great output quality
+    - older data, limited geographic coverage
+    - *service sometimes unavailable*
+        
+## Geocoding with GGMAP
+
+- Google's Geocoding service
+    - fantastic accuracy, easy, fast, 
+    - worldwide coverage, up to date
+    - limited to 2500 addresses per day
+    - other limits may also apply!
+        
+
+## Geocoding with GGMAP
+
+<pre>
+> #install.packages("ggmap") # if not already installed
+> library(ggmap)
+> geocode("Barrows Hall, Berkeley, CA", source="google")
+
+       lon      lat
+1 -122.258 37.87006
+</pre>
+
+Go ahead and stick that in maps.google.com
+- must be in *lat,lon* order, comma separated!
+
+
+- Then try using GGMAP to Geocode
+    - an address
+    - a zipcode
+
+*Be sure to specify source="google"*
+
+## ?geocode
+
+<img src="screenshots/ggmap_geocode_help.png" alt="lonlat" style="width:100%;">
+
+
+## Try these Geocode Options for *output=*
+
+- geocode("Barrows Hall, Berkeley, CA", source="google", output="latlon")
+- geocode("Barrows Hall, Berkeley, CA", source="google", output="latlona")
+- geocode("Barrows Hall, Berkeley, CA", source="google", output="more")
+- geocode("Barrows Hall, Berkeley, CA", source="google", output="all")
+
+
+## Output differences
+<pre>
+> geocode("Barrows Hall, Berkeley, CA", source="google", output="latlon")
+       lon      lat
+1 -122.258 37.87006
+
+> geocode("Barrows Hall, Berkeley, CA", source="google", output="latlona")
+       lon      lat                               address
+1 -122.258 37.87006 barrows hall, berkeley, ca 94720, usa
+</pre>
+
+## Output differences
+<pre>
+> geocode("Barrows Hall, Berkeley, CA", source="google", output="more")
+
+       lon      lat    type loctype                               address    north    south
+1 -122.258 37.87006 premise rooftop barrows hall, berkeley, ca 94720, usa 37.87147 37.86877
+       east      west      premise locality administrative_area_level_2
+1 -122.2566 -122.2593 Barrows Hall Berkeley              Alameda County
+  administrative_area_level_1       country postal_code
+1                  California United States       94720
+
+> geocode("Barrows Hall, Berkeley, CA", source="google", output="all")
+# not shown!
+</pre>
+
+## Checking Output Quality
+<pre>
+> one <- geocode(location="7305 Edgewater Dr Oakland CA 94621", 
+            source="google", output="more")
+> two <- geocode("sather gate, berkeley, ca", 
+            source="google", output="more", messaging=TRUE)
+
+> one$loctype
+[1] rooftop
+
+
+> two$loctype
+[1] approximate
+
+</pre>
+
+## Append geocoded info to input data
+
+Create a data frame with three addresses
+
+<pre>
+
+> df <- data.frame(
+          address = c(
+              "1517 Shattuck Ave, Berkeley, CA 94709", 
+              "Barrows Hall, Berkeley, CA", 
+              "2332 Haste St, Berkeley, CA 94704"
+          ),
+          stringsAsFactors = FALSE
+        )
+
+> df
+                                address
+1 1517 Shattuck Ave, Berkeley, CA 94709
+2            Barrows Hall, Berkeley, CA
+3     2332 Haste St, Berkeley, CA 94704
+</pre>
+
+## Geocode the three Addresses
+
+<pre>
+> df2 <- geocode(df$address,source="google", output="more")
+
+# just keep lat, lon, type, and loctype
+> df2 <- df2[,c(1:4)]
+
+> df2
+        lon      lat           type loctype
+1 -122.2689 37.87959 street_address rooftop
+2 -122.2580 37.87006        premise rooftop
+3 -122.2615 37.86537 street_address rooftop
+</pre>
+
+## Join output to input
+<pre>
+> df3 <- data.frame(df,df2)
+
+> df3
+                                address       lon      lat           type loctype
+1 1517 Shattuck Ave, Berkeley, CA 94709 -122.2689 37.87959 street_address rooftop
+2            Barrows Hall, Berkeley, CA -122.2580 37.87006        premise rooftop
+3     2332 Haste St, Berkeley, CA 94704 -122.2615 37.86537 street_address rooftop
+> 
+
+</pre>
+
+## Map it with GGMAP
+
+<pre>
+map <- get_map(location=c(lon=mean(df3$lon), lat=mean(df3$lat)), zoom=14)
+ggmap(map) +
+  geom_point(aes(x = lon, y = lat), data=df3, size = 6, col="red" )  
+</pre>
+
+<img src="screenshots/ggmap_plot1.png" alt="lonlat" style="width:400px;">
+
+*Try different (or no) zoom levels!*
+
+
+## Geocode a file of addresses
+
+<pre>
+# get the input data
+data <- read.csv(file="address_data/formatted/
+    oak_liq_w_ids_types_headers.csv",stringsAsFactors=F)
+head(data)
+
+  id               name              street     city state   zip type
+1  1    Wah Fay Liquors        2101 8th Ave  Oakland    CA 94606    p
+2  2      Vision Liquor 1615 Macarthur Blvd  Oakland    CA 94602    p
+3  3    Souza's Liquors         394 12th St  Oakland    CA 94607    p
+4  4         Tk Liquors       1500 23th Ave  Oakland    CA 94606    p
+5  5 Quadriga Wines Inc   6193 Ridgemont Dr  Oakland    CA 94619    p
+6  6             Bev Mo   525 Embarcadero W  Oakland    CA 94607    c
+
+</pre>
+*We need one column with address (not multiple)*
+
+## We need one column with address (not multiple)
+<pre>
+data$address <- with(data,paste(street,city,state,zip, sep=","))
+head(data)
+ 
+</pre>
+<img src="screenshots/addresses1.png" alt="lonlat" style="width:100%;">
+
+## Irregularity is a Problem
+
+<pre>
+
+> data[19,8]
+"7305 Edgewater Dr #D,Oakland,CA,94621"
+
+> geocode(data[19,8], source="google", output="latlona")
+        lon      lat                                    address
+1 -81.44055 28.62331 7305 edgewater dr, lockhart, fl 32810, usa
+
+data[19,8]<-"7305 Edgewater Dr,Oakland,CA,94621"  
+</pre>
+
+*Now geocode that address again.*
+
+**How to spot problems like that?**
+
+## Save it!
+<pre>
+geocoded_output <- geocode(data$address, output = "latlona", 
+        source = "google")
+        
+geocoded_output <- data.frame(data, geocoded_output)
+
+head(geocoded_output) # check it
+
+# save output to file
+write.csv(geocoded_output,file="geocoded_output.csv", row.names=FALSE)
+</pre>
+
+## Know Your limits
+
+####Scaling up to more than 2500 records?
+<pre>
+> geocodeQueryCheck() #how am I doing?
+2489 geocoding queries remaining.
+</pre>
+
+- The downloaded data for this tutorial contains an R script showing how to geocoded within the google limits
+- scripts/google_geocode_limits.R
+
+
+## Geocoding Output
+
+- With a little preprocessing most reliable geocoders will be able to geocode 80% or more of your addresses within a block of the actual location.
+- based on my my experience!
+- assumes US addresses.
+
+- Cleaning and standardizing addresses is a lot of work!
+    - unlikely to get it perfect
+    - extremely important
+    
+## Standardize Addresses
+- provide all components
+- remove unnecessary components
+- remove duplicates 
+- remove extra spaces or commas
+- remove odd characters like “#” “/”, “@”
+- standardize capitalization
+
+## Standardize Addresse
+
+- Intersections
+    - Corner of Main and Long Ave should be **Main & Long**
+- Numbered Streets
+    - Fourth St should be **4th St**
+- Directional Prefixes
+    - North, No, N., etc should be **N**
+- Apartment numbers and letters
+    - Remove them!
+- Use **PO Box**
+    - unless you have the address!
+
+## Use Standard Abbreviations
+|Use|For These|
+|----------------|----------------------------|
+|HWY|Highway|
+|LN|Lane|
+|DR| Drive|
+|EXPY|Expressway|
+
+## Problemns in Reference Database
+- Incorrect street ranges
+- Inaccurate or low quality features 
+- Inaccurate feature attributes
+
+- Missing streets
+- Address changes
+
+## Output Quality &  Population Density
+<img src="screenshots/popdens.png" alt="lonlat" style="width:450px;">
+
+## Address Format Differs by Geocoder!
+
+Google
+<pre>
+ID,Store,Address
+1,Wah Fay Liquors,2101 8th Ave Oakland CA 94606
+2,Vision Liquor,1615 Macarthur Blvd Oakland CA 94602
+</pre>
+
+Census Tiger
+<pre>
+1,2101 8th Ave,Oakland,CA,94606
+2,1615 Macarthur Blvd,Oakland,CA,94602
+</pre>
+
+**Be mindful of commas!**
+
+## Assessing Output Quality
+- map the results
+- examine the range of coordinates
+    - CA: -124, 32, -114, 42
+- review output metadata
+   - specific to the geocoder
+
+## Google Limits
+
+https://developers.google.com/maps/documentation/geocoding
+/usage-limits
+
+<img src="screenshots/google_limits.png" alt="limits" style="width:600px;">
+
+
+## Geocoding with Yahoo Placefinder in R
+- RYDN Package
+  -  devtools::install_github("trestletech/rydn")
+- 2000 addresses per day limit!
+- You need to apply for a YDN API Key
+    - Yahoo Developer Network
+- See script for example usage
+    - **scripts/yahoo_geocoding.R**
+
+## US Census TIGER Geocoding API in R
+
+- No limit
+- Addresses only
+- Returns the Census FIPS code for each geocoded address
+- - See script for example usage
+    - **scripts/tiger_geocoding.R**
+
+## Linking to Census Data
+
+**U.S. Census Bureau Census Block
+15 character FIPS Codes**
+
+<pre>
+http://data.fcc.gov/api/block/find?latitude=[latitude]&
+longitude=[longitude]&showall=[true/false]&censusYear=[2000|2009|2010]
+</pre>
+
+## FCC FIPS API
+
+<img src="screenshots/fcc_api.png" alt="limits" style="width:600px;">
+
+- <Block FIPS=”060855046011175”>
+
+- The first two characters (06) indicate the state (CA), 
+- the next three (085) indicate the county (Alameda), 
+- the next 6 indicate the census tract (5046.01) 
+- and the last four characters indicates the census block group and block number (1175).  
+    - *The first digit of the block identifies the block group.*
+
+## Linking to Census Data
+<pre>
+library(RCurl)
+library(RJSONIO)
+# FCC's Census Block Conversions API
+# http://www.fcc.gov/developers/census-block-conversions-api
+
+latlong2fips <- function(latitude, longitude) {
+  #Source: https://gist.github.com/ramhiser/f09a71d96a4dec80994c
+  url <- "http://data.fcc.gov/api/block/find?format=json&latitude=%f&longitude=%f"
+  url <- sprintf(url, latitude, longitude)
+  print(url)
+  json <- RCurl::getURL(url)
+  json <- RJSONIO::fromJSON(json)
+  as.character(json$Block['FIPS']) # Census 2010 Block FIPS Code
+}
+
+geocoded_output$fips<- mapply(latlong2fips,geocoded_output$lat,geocoded_output$lon)
+</pre>
+
+## Another method
+
+See this script: **scripts/getFipsForPoints.R**
+
+## Next Steps
+- Consider hybrid approaches
+- Make a D-Lab consulting appointment if you are using RUD
+- Take a look at the References
+
+
+## References
+- https://cran.r-project.org/web/packages/ggmap/index.html
+- https://journal.r-project.org/archive/2013-1/kahle-wickham.pdf
+- https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/ggmap/ggmapCheatsheet.pdf
+- https://developers.google.com/maps/documentation/geocoding/intro
+- http://www.albany.edu/faculty/ttalbot/Geocoding_Lecture_2015.pdf
+
+## References
+- http://rstudio-pubs-static.s3.amazonaws.com/90665_de25062951e540e7b732f21de53001f0.html
+- https://github.com/walkerke/tigris
+- http://zevross.com/blog/2015/10/14/manipulating-and-mapping-us-census-data-in-r-using-the-acs-tigris-and-leaflet-packages-3/
+- http://www2.census.gov/geo/tiger
+    - Then go to: http://www.census.gov/geo/maps-data/data/tiger-line.html (read how do i choose...)
+- http://dlab.berkeley.edu/blog/address-geocoding-options-uc-berkeley-community
 

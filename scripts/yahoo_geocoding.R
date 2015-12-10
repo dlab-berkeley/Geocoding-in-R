@@ -1,9 +1,13 @@
 # Geocoding with Yahoo Placefinder
-# 2000 addresses per day limit
-
-#following zev ross blog
+## pattyf@berkeley.edu, 12/8/2015
+#
+# 2000 addresses per day limit!
+#
+# Review the following blog post by Zev Ross
 # http://zevross.com/blog/2015/05/19/scrape-website-data-with-the-new-r-package-rvest/
-#You need to first apply for an account on https://developer.yahoo.com
+#
+# You need to first apply for an account on https://developer.yahoo.com
+#
 
 #set working directory
 setwd("~/Documents/Dlab/dlab_workshops/rgeocoding")
@@ -12,8 +16,9 @@ setwd("~/Documents/Dlab/dlab_workshops/rgeocoding")
 # devtools::install_github("trestletech/rydn")
 library(rydn)
 
-# readin your keys from YDN (don't share)
-source("keys/ydn_keys.R")
+# readin your YDN keys - keep in a separate file
+source("keys/ydn_keys.R") 
+# That file looks like this:
 #mykey="dj0.......................00Zg--"
 #mysecret ="00....................8"
 
@@ -39,4 +44,4 @@ ggmap(map) +
   geom_point(aes(x = longitude, y = latitude), size = 6, col="red", data = myloc)  
 
 
-# lets plot it interactively via rleaflet
+ 

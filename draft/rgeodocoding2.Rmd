@@ -1,0 +1,412 @@
+---
+title: "RGeocoding"
+author: "patty"
+date: "December 4, 2015"
+output: slidy_presentation
+---
+
+## Geocoding in R
+
+Getting Started: Download the zipfile for this tutorial from
+https://github.com/dlab-geo/RGeocoding/archive/master.zip
+
+
+
+## Overview
+
+- What is Geocoding
+- A simple example in Google Maps
+- Why Geocode
+- Geocoding in Detail
+- How to Geocode in R
+    - with GGMAPS
+    - with Yahoo Placefinder
+    - with TIGER
+- Now what
+
+## What is Geocoding
+
+Determine the geographic coordinates of a named place, street address, or zip code.
+
+- city, building, 
+- street address, intersection, 
+- mountain, landmark,
+- crime or other event location,
+- zip code, etc.
+
+## Try It!
+
+![Barrows in Google Maps](screenshots/gmap_barrows.png)
+
+maps.google.com
+
+## Geographic Coordinates
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Latitude_and_Longitude_of_the_Earth.svg/2000px-Latitude_and_Longitude_of_the_Earth.svg.png" alt="lonlat" style="width:450px;">
+
+||
+------------------------|-----------------------------------|-
+**Latitude**|+/- 90 degrees|*how far north or south of equator*
+**Longitude**|+/- 180 degrees|*how far E/W of prime meridian*
+
+**Decimal Degrees (DD)**  
+37.870145, -122.25952
+
+**Degrees, minutes, seconds (DMS)**  
+37° 52' 12"N, 122° 15' 36" W
+
+
+## Why?
+
+- Display locations on a map
+- Link locations to other data
+- Spatial analysis
+    - Calculate distance, direction, area, etc.
+    - Identify patterns & relationships:
+        - clusters, outliers, neighbors
+
+## Address Geocoding
+
+## Where do Addresses come from
+
+- Extract from text documents
+- File or Database
+- Web Scraping
+
+## Process
+
+![geocoding_details](screenshots/geocoding_details1.png)
+
+## Evaluation
+
+Reference database extremeley important
+
+![geocoding_details2](screenshots/geocoding_details2.png)
+
+## Geocoder Output Comparison
+
+![geocoding_details2](screenshots/output_compare.png)
+
+## Considerations
+
+- Geographic scope
+- Time period
+- Output Quality
+- Number of addresses
+- Data Privacy/security
+- Cost
+
+## Local Geocoding
+- ArcGIS
+
+## Remote Geocoding
+ArcGIS
+Google
+Yahoo
+OpenStreetMaps
+Data Science Toolkit (DSTK)
+*and many others*
+
+## Geocoding in R
+
+Access an online Geocoder using an API
+*Application Progromming Toolkit*
+
+In R via a package or script.
+
+## Geocoding in R with
+
+- GGMAPS
+    - Google
+    - DSTK
+- RYDN & Yahoo
+- TIGER
+
+## Geocoding with GGMAP
+- Created by David Kahle and Hadley Wickham, ggplot2 developer
+- Provides functionality for fetching online map data from Google and other services
+and overlaying other geodata using ggplot
+- Includes functions for Geocoding functionality using:
+    - the Data Science Toolkit (DSTK) geocoding service 
+        - default, unlimited usage
+     - Google's Geocoding service
+        - limited to 2500 addresses per day
+        - other limits may also apply!
+        
+## GGMAP
+  - the Data Science Toolkit (DSTK) geocoding service 
+        - default, unlimited usage
+        - solid, not great 
+        - older data, limited geographic coverage
+        - sometimes unavailable
+        
+     - Google's Geocoding service
+        - fantastic accuracy, worldwide coverage, up to date
+        - limited to 2500 addresses per day
+        
+
+## Geocoding with GGMAP
+
+<pre>
+> library(ggmap)
+> geocode("Barrows Hall, Berkeley, CA", source="google")
+
+       lon      lat
+1 -122.258 37.87006
+</pre>
+
+Go ahead and stick that in maps.google.com
+- must be in *lat,lon* format!
+
+Then try Geocoding
+
+- an address
+- a zipcode
+
+## ?geocode
+
+<img src="screenshots/ggmap_geocode_help.png" alt="lonlat" style="width:600px;">
+
+
+## Try these changes
+
+- output="latlon" or "latlona" or "more" or "all"
+
+## Output differences
+<pre>
+> geocode("Barrows Hall, Berkeley, CA", source="google", output="latlon")
+
+       lon      lat
+1 -122.258 37.87006
+
+> geocode("Barrows Hall, Berkeley, CA", source="google", output="latlona")
+
+       lon      lat                               address
+1 -122.258 37.87006 barrows hall, berkeley, ca 94720, usa
+
+> geocode("Barrows Hall, Berkeley, CA", source="google", output="more")
+
+       lon      lat    type loctype                               address    north    south
+1 -122.258 37.87006 premise rooftop barrows hall, berkeley, ca 94720, usa 37.87147 37.86877
+       east      west      premise locality administrative_area_level_2
+1 -122.2566 -122.2593 Barrows Hall Berkeley              Alameda County
+  administrative_area_level_1       country postal_code
+1                  California United States       94720
+
+> geocode("Barrows Hall, Berkeley, CA", source="google", output="all")
+</pre>
+
+## Accuracy
+<pre>
+one <- geocode(location="7305 Edgewater Dr Oakland CA 94621", source="google", output="more")
+two <- geocode("sather gate, berkeley, ca", source="google", output="more", messaging=TRUE)
+
+one$loctype
+two$loctype
+three$loctype
+</pre>
+
+## Append geocoded info to source data
+
+Create a data frame with three addresses
+
+<pre>
+
+> df <- data.frame(
+          address = c("1517 Shattuck Ave, Berkeley, CA 94709", 
+              "Barrows Hall, Berkeley, CA", 
+              "2332 Haste St, Berkeley, CA 94704"),
+          stringsAsFactors = FALSE
+)
+
+> df
+                                address
+1 1517 Shattuck Ave, Berkeley, CA 94709
+2            Barrows Hall, Berkeley, CA
+3     2332 Haste St, Berkeley, CA 94704
+</pre>
+
+## Geocode the three Addresses
+
+<pre>
+> df2 <- geocode(df$address,source="google", output="more")
+# just keep lat, lon, type, and loctype
+> df2 <- df2[,c(1:4)]
+
+> df2
+        lon      lat           type loctype
+1 -122.2689 37.87959 street_address rooftop
+2 -122.2580 37.87006        premise rooftop
+3 -122.2615 37.86537 street_address rooftop
+</pre>
+
+## Join output to input
+<pre>
+> df3 <- data.frame(df,df2)
+
+> df3
+                                address       lon      lat           type loctype
+1 1517 Shattuck Ave, Berkeley, CA 94709 -122.2689 37.87959 street_address rooftop
+2            Barrows Hall, Berkeley, CA -122.2580 37.87006        premise rooftop
+3     2332 Haste St, Berkeley, CA 94704 -122.2615 37.86537 street_address rooftop
+> 
+
+</pre>
+
+## Map it
+
+<pre>
+> map <- get_map(location=c(lon=mean(df3$lon), lat=mean(df3$lat)), zoom=14)
+> ggmap(map) +
+  geom_point(aes(x = lon, y = lat), data=df3, size = 6, col="red" )  
+</pre>
+
+Try different (or no) zoom levels!
+
+
+## Geocode a file of addresses
+
+<pre>
+# get the input data
+data <- read.csv(file="address_data/formatted/oak_liq_w_ids_types_headers.csv",stringsAsFactors=F)
+head(data)
+
+  id               name              street     city state   zip type
+1  1    Wah Fay Liquors        2101 8th Ave  Oakland    CA 94606    p
+2  2      Vision Liquor 1615 Macarthur Blvd  Oakland    CA 94602    p
+3  3    Souza's Liquors         394 12th St  Oakland    CA 94607    p
+4  4         Tk Liquors       1500 23th Ave  Oakland    CA 94606    p
+5  5 Quadriga Wines Inc   6193 Ridgemont Dr  Oakland    CA 94619    p
+6  6             Bev Mo   525 Embarcadero W  Oakland    CA 94607    c
+
+</pre>
+
+## We need one column with address (not multiple)
+<pre>
+data$address <- with(data,paste(street,city,state,zip, sep=" "))
+head(data)
+
+  id               name              street     city state   zip type                              address
+1  1    Wah Fay Liquors        2101 8th Ave  Oakland    CA 94606    p        2101 8th Ave Oakland CA 94606
+2  2      Vision Liquor 1615 Macarthur Blvd  Oakland    CA 94602    p 1615 Macarthur Blvd Oakland CA 94602
+3  3    Souza's Liquors         394 12th St  Oakland    CA 94607    p         394 12th St Oakland CA 94607
+4  4         Tk Liquors       1500 23th Ave  Oakland    CA 94606    p       1500 23th Ave Oakland CA 94606
+5  5 Quadriga Wines Inc   6193 Ridgemont Dr  Oakland    CA 94619    p   6193 Ridgemont Dr Oakland CA 94619
+6  6             Bev Mo   525 Embarcadero W  Oakland    CA 94607    c  525 Embarcadero W  Oakland CA 94607
+
+</pre>
+
+## Irregularity is a Problem
+
+<pre>
+
+> data[19,8]
+[1] "7305 Edgewater Dr #D Oakland CA 94621"
+
+> geocode(data[19,8], source="google", output="latlona")
+        lon      lat                                    address
+1 -81.44055 28.62331 7305 edgewater dr, lockhart, fl 32810, usa
+
+data[19,8]<-"7305 Edgewater Dr Oakland CA 94621"  ## Why do we need to do this??
+</pre>
+
+## Geocode!
+<pre>
+geocoded_output <- geocode(data$address, output = "latlona", source = "google")
+geocoded_output <- data.frame(data, geocoded_output)
+
+## Review
+head(geocoded_output)
+
+## save output
+write.csv(geocoded_output,file="geocoded_output.csv", row.names=FALSE)
+</pre>
+
+## Know Your limits
+
+####Scaling up to more than 2500 records?
+
+geocodeQueryCheck() #how am I doing?
+
+
+## Working With Limits
+<pre>
+maxrecs <- geocodeQueryCheck()
+
+data <- read.csv(file="address_data/formatted/oak_liq_w_ids_types_headers.csv",stringsAsFactors=F) # read data
+data$address <- with(data,paste(street,city,state,zip, sep=" ")) #add single column address
+if (!exists("data$geocoded")) {
+  # do this once
+  data$geocoded <- 0
+}
+not_geocoded <- subset(data,geocoded == 0)
+not_geocoded <- not_geocoded[,maxrecs]
+nrow(not_geocoded)
+not_geocoded[19,8]<-"7305 Edgewater Dr Oakland CA 94621"  ## Why do we need to do this??
+
+geocoded_output <- geocode(not_geocoded$address, output = "latlona", source = "google")
+geocoded_output$geocoded <- 1
+geocoded_output <- data.frame(data, geocoded_output)
+#save output
+write.csv(geocoded_output,file="geocoded_output.csv", row.names=FALSE)
+</pre>
+
+
+## More Google Limits
+
+https://developers.google.com/maps/documentation/geocoding/usage-limits
+
+<img src="screenshots/google_limits.png" alt="limits" style="width:600px;">
+
+## Yahoo Placefinder - non-commerical version!
+
+- Similar quality to Google
+- Limited to 2000 geocodes per day
+- **But** fewer usage restrictions
+
+- Available via *RYDN* Package
+    - YDN = Yahoo Developers Network
+
+## First!
+Apply for an account on YDN
+
+**Add slides for account**
+
+
+## Next - Install RYDN
+# devtools::install_github("trestletech/rydn")
+library(rydn)
+
+## Key in!
+# readin your keys from YDN (don't share)
+source("keys/ydn_keys.R")
+#mykey="dj0.......................00Zg--"
+#mysecret ="00....................8"
+
+## Testing
+myloc <- find_place("Barrows Hall, Berkeley,ca",key=mykey,secret=mysecret)
+myloc #see what was returned
+ 
+*TO interpret response see: https://developer.yahoo.com/boss/geo/docs/supported_responses.html*
+
+## work with subset of the returned info
+myloc_sub <- myloc[1 ,c("quality",  "latitude", "longitude", "radius")] #subset
+
+#convert strings to numerics
+myloc$longitude <- as.numeric(myloc$longitude)
+myloc$latitude <- as.numeric(myloc$latitude)
+
+## Now geocode!
+
+
+## What's median income around my liquor stores
+
+
+
+## References
+- https://cran.r-project.org/web/packages/ggmap/index.html
+- https://journal.r-project.org/archive/2013-1/kahle-wickham.pdf
+- https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/ggmap/ggmapCheatsheet.pdf
+
+
+
