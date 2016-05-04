@@ -1,7 +1,7 @@
 ---
-title: "RGeocoding"
+title: "Geocoding in R"
 author: "Patty Frontiera"
-date: "December 4, 2015"
+date: "May 4, 2016"
 output: ioslides_presentation
 ---
 
@@ -15,14 +15,14 @@ https://github.com/dlab-geo/RGeocoding/archive/master.zip
 ## Overview
 
 - What is Geocoding
-- A simple example in Google Maps
 - Why Geocode
+- Google Maps examples
+- A brief overview of Geographic Coordinates
 - Geocoding in Detail
 - How to Geocode in R
     - with GGMAPS
-    - with Yahoo Placefinder
-    - with TIGER
-- Now what
+    - with Census Geocoding Service
+- Next Steps
 
 ## What is Geocoding
 
@@ -34,10 +34,21 @@ Determine the geographic coordinates of a named place, street address, or zip co
 - crime or other event location,
 - zip code, etc.
 
+## Why Geocode?
+
+- Display locations on a map
+- Link locations to other data
+- Spatial analysis
+    - Calculate distance, direction, area, etc.
+    - Identify patterns & relationships:
+        - clusters, outliers, neighbors
+
 ## Try It!
 
 <img src="screenshots/gmap_barrows.png" alt="google maps" style="width:650px;">
 maps.google.com
+
+*Try entering a city, landmark (Sather Gate), zipcode, address, etc.*
 
 ## Geographic Coordinates
 
@@ -54,20 +65,41 @@ maps.google.com
 **Degrees, minutes, seconds (DMS)**  
 37° 52' 12"N, 122° 15' 36" W
 
+## Geographic Coordinate Reference Systems
 
-## Why Geocode?
+Longitude & latitude specify locations on the surface of the earth with respect to a Coordinate Reference System (CRS).
 
-- Display locations on a map
-- Link locations to other data
-- Spatial analysis
-    - Calculate distance, direction, area, etc.
-    - Identify patterns & relationships:
-        - clusters, outliers, neighbors
+Components of a CRS:
 
-*We will cover the first two*
+- datum: specifies the shape of the earth (the Ellipsoid) and how the coordinate system is anchored to the shape.
+- units: e.g., meters, feet, decimal degrees
+- origin: X-axis = Prime Meridian, Y-axis = Equator
+
+## Reference Ellipsoids
+
+There are many CRSs because there have been many specifications of the shape of the Earth.
+
+<img src="http://kartoweb.itc.nl/geometrics/Bitmaps/global%20&%20local%20ellipsoids.gif" alt="lonlat" style="width:500px;">
+
+## Commonly used Geographic CRS
+- **WGS84**: global CRS used by GPS and satellite data. The default.
+- **NAD83**: North American Datum 1983. US Federal geographic data projects
+
+These global CRSs area identical for most purposes.
+
+## Projected CRS - Map Projects
+Transform coordinates from 3D sphere to a 2D plane.
+
+<img src="http://workshops.boundlessgeo.com/postgis-intro/_images/cartesian_spherical.jpg" style="width:650px;">
+
+## Why do you need to care about CRSs?
+- In R, you will get an error message if you try to analyze spatial data objects with different CRSs
+    - This is a good thing!
+- Different CRSs may specify different locations for the same place
+
 
 ## Address Geocoding
-<img src="http://beginningandend.com/wp-content/uploads/2012/06/666-Park-Avenue-Banner.jpg" alt="lonlat" style="width:100%;">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/221B_Baker_Street%2C_London_-_Sherlock_Holmes_Museum.jpg/640px-221B_Baker_Street%2C_London_-_Sherlock_Holmes_Museum.jpg" alt="lonlat" style="width:600;">
  
 
 ## Where do Addresses come from?
@@ -76,13 +108,13 @@ maps.google.com
 - File or Database
 - Web Scraping
 
-## Process Details
+## Address Geocoding Details
 
 <img src="screenshots/geocoding_details1.png" alt="geocoding details" style="width:100%;">
 
 ## Evaluation
 
-Reference database extremeley important
+Reference database extremely important
 
 ![geocoding_details2](screenshots/geocoding_details2.png)
 
@@ -100,7 +132,7 @@ Reference database extremeley important
 - Number of addresses
 - Data Privacy/security
 - Cost
-- ease of use
+- Ease of use
 
 ## Local Geocoding
 
@@ -110,16 +142,18 @@ ESRI ArcGIS with local reference database
     - highly customizable
     - fast & robust software
     - easy to use GUI
+    - secure
 
 - Issues
-    - free reference database circa 2009
+    - need local reference database
+        - campus has access to high quality 2014 data
     - limited to USA & Canada
     
 ## Remote Geocoding Services
 
 - ArcGIS Online
 - Google
-- Yahoo
+- Yahoo, Bing, Here
 - OpenStreetMaps
 - Data Science Toolkit (DSTK)
 - *and many others*
@@ -138,7 +172,7 @@ Access an online Geocoder using an API
     - Google
     - DSTK
 
-- RYDN & Yahoo Placefinder
+
 
 - US Census TIGER Geocoding Service
 
@@ -151,8 +185,8 @@ Access an online Geocoder using an API
      - Google's Geocoding service
 
 
-- Also has functionality for fetching map data from Google and other online services
-    - you can use these with your data to create custom maps
+
+- Also has functionality for creating maps
 
         
 ## Geocoding with GGMAP
@@ -173,7 +207,13 @@ Access an online Geocoder using an API
     - other limits may also apply!
         
 
-## Geocoding with GGMAP
+## Geocoding with GGMAP with Google Geocoder
+
+Follow along with slides in RStudio or load:
+
+- **scripts/ggmap_geocoding_examples.R**
+
+## Geocoding with GGMAP with Google Geocoder
 
 <pre>
 > #install.packages("ggmap") # if not already installed
@@ -184,22 +224,46 @@ Access an online Geocoder using an API
 1 -122.258 37.87006
 </pre>
 
-Go ahead and stick that in maps.google.com
-- must be in *lat,lon* order, comma separated!
 
 
-- Then try using GGMAP to Geocode
+## Try it!
+
+Try using GGMAP to Geocode:
+
     - an address
     - a zipcode
+    - a state
+    - landmark or building
+
 
 *Be sure to specify source="google"*
 
-## ?geocode
+Copy & paste the output coordinates in **maps.google.com** search bar.
 
+  - Coordinates must be in *lat,lon* order, comma separated!
+
+## Getting Help: ?geocode
+<hr/>
 <img src="screenshots/ggmap_geocode_help.png" alt="lonlat" style="width:100%;">
 
+## Geocoding Output
 
-## Try these Geocode Options for *output=*
+You get: **Point coordinates**
+
+If you want **polygons** you need to:
+
+- load the polygon data into R
+    - from a package (eg maps)
+    - from a file (e.g., census TIGER data)
+
+ 
+- match by place name
+
+## Geocoding Historic Locations
+
+Good question!
+
+## Explore Geocode Options for *output=*
 
 - geocode("Barrows Hall, Berkeley, CA", source="google", output="latlon")
 - geocode("Barrows Hall, Berkeley, CA", source="google", output="latlona")
@@ -329,17 +393,17 @@ head(data)
 6  6             Bev Mo   525 Embarcadero W  Oakland    CA 94607    c
 
 </pre>
-*We need one column with address (not multiple)*
+*Google requires address in one column (not multiple)*
 
-## We need one column with address (not multiple)
+## Create Address Column - full address in one column
 <pre>
 data$address <- with(data,paste(street,city,state,zip, sep=","))
-head(data)
+head(data) # look at the data frame
  
 </pre>
 <img src="screenshots/addresses1.png" alt="lonlat" style="width:100%;">
 
-## Irregularity is a Problem
+## Odd address formats can be a problem
 
 <pre>
 
@@ -349,15 +413,17 @@ head(data)
 > geocode(data[19,8], source="google", output="latlona")
         lon      lat                                    address
 1 -81.44055 28.62331 7305 edgewater dr, lockhart, fl 32810, usa
+</pre>
+
+## Update address
+<pre>
 
 data[19,8]<-"7305 Edgewater Dr,Oakland,CA,94621"  
 </pre>
 
 *Now geocode that address again.*
 
-**How to spot problems like that?**
-
-## Save it!
+## Geocode a File of addresses
 <pre>
 geocoded_output <- geocode(data$address, output = "latlona", 
         source = "google")
@@ -366,7 +432,7 @@ geocoded_output <- data.frame(data, geocoded_output)
 
 head(geocoded_output) # check it
 
-# save output to file
+# Save output to file
 write.csv(geocoded_output,file="geocoded_output.csv", row.names=FALSE)
 </pre>
 
@@ -378,108 +444,16 @@ write.csv(geocoded_output,file="geocoded_output.csv", row.names=FALSE)
 2489 geocoding queries remaining.
 </pre>
 
-- The downloaded data for this tutorial contains an R script showing how to geocoded within the google limits
-- scripts/google_geocode_limits.R
+Blog with code for geocoding more than 2,500 addresses:
 
+- http://www.shanelynn.ie/massive-geocoding-with-r-and-google-maps/
 
-## Geocoding Output
-
-- With a little preprocessing most reliable geocoders will be able to geocode 80% or more of your addresses within a block of the actual location.
-- based on my my experience!
-- assumes US addresses.
-
-- Cleaning and standardizing addresses is a lot of work!
-    - unlikely to get it perfect
-    - extremely important
-    
-## Standardize Addresses
-- provide all components
-- remove unnecessary components
-- remove duplicates 
-- remove extra spaces or commas
-- remove odd characters like “#” “/”, “@”
-- standardize capitalization
-
-## Standardize Addresse
-
-- Intersections
-    - Corner of Main and Long Ave should be **Main & Long**
-- Numbered Streets
-    - Fourth St should be **4th St**
-- Directional Prefixes
-    - North, No, N., etc should be **N**
-- Apartment numbers and letters
-    - Remove them!
-- Use **PO Box**
-    - unless you have the address!
-
-## Use Standard Abbreviations
-|Use|For These|
-|----------------|----------------------------|
-|HWY|Highway|
-|LN|Lane|
-|DR| Drive|
-|EXPY|Expressway|
-
-## Problemns in Reference Database
-- Incorrect street ranges
-- Inaccurate or low quality features 
-- Inaccurate feature attributes
-
-- Missing streets
-- Address changes
-
-## Output Quality &  Population Density
-<img src="screenshots/popdens.png" alt="lonlat" style="width:450px;">
-
-## Address Format Differs by Geocoder!
-
-Google
-<pre>
-ID,Store,Address
-1,Wah Fay Liquors,2101 8th Ave Oakland CA 94606
-2,Vision Liquor,1615 Macarthur Blvd Oakland CA 94602
-</pre>
-
-Census Tiger
-<pre>
-1,2101 8th Ave,Oakland,CA,94606
-2,1615 Macarthur Blvd,Oakland,CA,94602
-</pre>
-
-**Be mindful of commas!**
-
-## Assessing Output Quality
-- map the results
-- examine the range of coordinates
-    - CA: -124, 32, -114, 42
-- review output metadata
-   - specific to the geocoder
-
-## Google Limits
+## Google Usage Limits
 
 https://developers.google.com/maps/documentation/geocoding
 /usage-limits
 
 <img src="screenshots/google_limits.png" alt="limits" style="width:600px;">
-
-
-## Geocoding with Yahoo Placefinder in R
-- RYDN Package
-  -  devtools::install_github("trestletech/rydn")
-- 2000 addresses per day limit!
-- You need to apply for a YDN API Key
-    - Yahoo Developer Network
-- See script for example usage
-    - **scripts/yahoo_geocoding.R**
-
-## US Census TIGER Geocoding API in R
-
-- No limit
-- Addresses only
-- Returns the Census FIPS code for each geocoded address
-- - See script for example usage
-    - **scripts/tiger_geocoding.R**
 
 ## Linking to Census Data
 
@@ -523,13 +497,127 @@ latlong2fips <- function(latitude, longitude) {
 geocoded_output$fips<- mapply(latlong2fips,geocoded_output$lat,geocoded_output$lon)
 </pre>
 
-## Another method
 
-See this script: **scripts/getFipsForPoints.R**
+## Improving Geocoding Results
+
+- Match Rate
+
+- Match Quality
+
+## Assessing Output Quality
+- map the results
+- examine the range of coordinates
+    - CA: -124, 32, -114, 42
+- review output data & metadata
+   - specific to the geocoder
+
+
+## Geocoding Output
+
+- With a little preprocessing most reliable geocoders will be able to geocode 80% or more of your addresses within a block of the actual location.
+- based on my my experience!
+- assumes US addresses.
+
+- Cleaning and standardizing addresses is a lot of work!
+    - unlikely to get it perfect
+    - extremely important
+
+    
+## Standardize Addresses
+- provide all components
+- remove unnecessary components
+- remove duplicates 
+- remove extra spaces or commas
+- remove odd characters like “#” “/”, “@”
+- standardize capitalization
+
+## Standardize Addresse
+
+- Intersections
+    - Corner of Main and Long Ave should be **Main & Long**
+- Numbered Streets
+    - Fourth St should be **4th St**
+- Directional Prefixes
+    - North, No, N., etc should be **N**
+- Apartment numbers and letters
+    - Remove them!
+- Use **PO Box**
+    - unless you have the address!
+
+## Use Standard Abbreviations
+|Use|For These|
+|----------------|----------------------------|
+|HWY|Highway|
+|LN|Lane|
+|DR| Drive|
+|EXPY|Expressway|
+
+## Automating Address Cleanup
+
+**Libpostal**: a fast, multilingual, international street address parser 
+
+Read all about it here:
+
+- https://mapzen.com/blog/inside-libpostal/
+
+## Problems in Reference Database
+- Incorrect street ranges
+- Inaccurate or low quality features 
+- Inaccurate feature attributes
+
+- Missing streets
+- Address changes
+
+## Output Quality &  Population Density
+<img src="screenshots/popdens.png" alt="lonlat" style="width:450px;">
+
+## Required Address Format Differs by Geocoder!
+
+Google Geocoder
+<pre>
+ID,Store,Address
+1,Wah Fay Liquors,2101 8th Ave Oakland CA 94606
+2,Vision Liquor,1615 Macarthur Blvd Oakland CA 94602
+</pre>
+
+US Census Geocoder
+<pre>
+1,2101 8th Ave,Oakland,CA,94606
+2,1615 Macarthur Blvd,Oakland,CA,94602
+</pre>
+
+**Be mindful of commas!**
+
+
+## US Census Geocoding Service
+
+
+## US Census Geocoding Service
+
+- No limits
+- US addresses only
+- Returns the Census FIPS code for each geocoded address
+- See scripts for example usage
+    - **scripts/census_geocoding_batch.R**
+    - **scripts/census_geocoding_single_address.R**
+
+
+## Spatial Analysis and Mapping of Geocoded Addresses
+
+Example questions: 
+
+- Get census tract data for geocoded points
+- Determine district in which geocoded address is located
+- Count number of geocoded addresses within district
+- Determine if geocoded addresses are within 1000 feet of a school
+- How to map the results?
+
+Sample Code:
+**scripts/spatial_analysis_examples.R**
 
 ## Next Steps
 - Consider hybrid approaches
-- Make a D-Lab consulting appointment if you are using RUD
+- Make a D-Lab consulting appointment if you are using restricted use data
 - Take a look at the References
 
 

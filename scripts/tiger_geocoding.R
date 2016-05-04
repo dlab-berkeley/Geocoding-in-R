@@ -1,12 +1,14 @@
 #
 # Geocoding with Tiger Geocoding Service
 #
-# pattyf@berkeley.edu, 12/8/2015
+# pattyf@berkeley.edu, 05/2/2016
 #
 # Important note:
 ## You can only geocode 1000 addresses at a time
 ## so need to add code to loop or subset your files
-
+##
+## Documentation:
+## 
 
 #clean environment
 rm(list=ls())
@@ -29,6 +31,9 @@ setwd("~/Documents/Dlab/dlab_workshops/rgeocoding")
 
 tiger_input_addressFile <- "tiger/tiger_12addresses_to_geocode.csv"
 
+# let's take a look at the addresses that we will geocode
+addresses_to_geocode <- read.csv(tiger_input_addressFile, stringsAsFactors = FALSE, col.names = c('id','street','city','state','zip'))
+
 tiger_url <- "http://geocoding.geo.census.gov/geocoder/geographies/addressbatch"
 
 ## WORKED - thanks to: http://stackoverflow.com/questions/26611289/curl-post-statement-to-rcurl-or-httr
@@ -42,10 +47,10 @@ geocoded_addresses <- POST(tiger_url, encode="multipart",
 )
 
 #write raw output to file
-capture.output(cat(content(geocoded_addresses)), file="test_out2.txt")
+capture.output(cat(content(geocoded_addresses)), file="test_out3.txt")
 
 #read output file in to a data frame (not sure how to do these two in one step)
-mylocs <- read.csv("test_out.txt",header=FALSE)
+mylocs <- read.csv("test_out3.txt",header=FALSE)
 head(mylocs)
 
 #doh split the lat,long values into two separate columns

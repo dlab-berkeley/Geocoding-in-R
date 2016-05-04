@@ -1,6 +1,7 @@
 #
 # Purpose: Use GGMAP to geocode with source="google" source" option
 # within google daily query limits 
+# Subject to Google Terms of Use: http://developers.google.com/maps/terms
 # You need to re-run the script when your number of needed geocodes exceeds the query limit
 # pattyf@berkeley.edu, 12/09/2015
 # created for dlab.berkeley.edu tutorial as example

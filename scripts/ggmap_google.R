@@ -1,6 +1,6 @@
 # geocoding with ggmap
 ## http://zevross.com/blog/2014/03/19/geocoding-with-rs-ggmap-package/
-## 
+## Subject to Google Terms of Use: http://developers.google.com/maps/terms
 ### Clear workspace
 rm(list=ls())
 
