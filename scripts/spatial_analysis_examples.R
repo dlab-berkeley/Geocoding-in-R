@@ -3,6 +3,19 @@
 #
 # pattyf@berkeley.edu, 5/3/2016
 
+#--------------------------------------
+# libraries - 
+# that may be needed for this tutorial 
+# and how to install & load them:
+#--------------------------------------
+required.pkg <- c("htmlwidgets", "leaflet", "ggmap", "ggplot2","httr","acs","RJSONIO","RCurl","stringr","plyr", "rgeos","rgdal", "sp")
+pkgs.not.installed <- required.pkg[!sapply(required.pkg, function(p) require(p, character.only=T))]
+install.packages(pkgs.not.installed, dependencies=TRUE)
+
+# Load all libraries them all at once.
+lapply(required.pkg, library, character.only = TRUE) 
+
+
 #------------------------------------------------------
 # Data Linkage Example:
 # Link geocoded addresses to census data

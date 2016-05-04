@@ -71,9 +71,10 @@ Longitude & latitude specify locations on the surface of the earth with respect 
 
 Components of a CRS:
 
-- datum: specifies the shape of the earth (the Ellipsoid) and how the coordinate system is anchored to the shape.
+- datum: specifies the shape of the earth (the Ellipsoid) and fits the ellipsoid to the Earth
 - units: e.g., meters, feet, decimal degrees
-- origin: X-axis = Prime Meridian, Y-axis = Equator
+- latitude of origin: Equator
+- longitude of origin: Prime Meridian
 
 ## Reference Ellipsoids
 
@@ -85,7 +86,7 @@ There are many CRSs because there have been many specifications of the shape of 
 - **WGS84**: global CRS used by GPS and satellite data. The default.
 - **NAD83**: North American Datum 1983. US Federal geographic data projects
 
-These global CRSs area identical for most purposes.
+For US locations, these global CRSs area identical for most purposes.
 
 ## Projected CRS - Map Projects
 Transform coordinates from 3D sphere to a 2D plane.
@@ -131,7 +132,7 @@ Reference database extremely important
 - Output Quality
 - Number of addresses
 - Data Privacy/security
-- Cost
+- Cost: free..freemium..premium
 - Ease of use
 
 ## Local Geocoding
@@ -187,6 +188,7 @@ Access an online Geocoder using an API
 
 
 - Also has functionality for creating maps
+    - and other cool stuff, like measuring distances
 
         
 ## Geocoding with GGMAP
@@ -204,8 +206,9 @@ Access an online Geocoder using an API
     - fantastic accuracy, easy, fast, 
     - worldwide coverage, up to date
     - limited to 2500 addresses per day
-    - other limits may also apply!
-        
+    - other usage limits may also apply!
+        - http://developers.google.com/maps/terms
+
 
 ## Geocoding with GGMAP with Google Geocoder
 
@@ -627,6 +630,7 @@ Sample Code:
 - https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/ggmap/ggmapCheatsheet.pdf
 - https://developers.google.com/maps/documentation/geocoding/intro
 - http://www.albany.edu/faculty/ttalbot/Geocoding_Lecture_2015.pdf
+- http://kartoweb.itc.nl/geometrics/
 
 ## References
 - http://rstudio-pubs-static.s3.amazonaws.com/90665_de25062951e540e7b732f21de53001f0.html

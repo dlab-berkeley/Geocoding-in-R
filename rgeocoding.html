@@ -176,9 +176,10 @@
 <p>Components of a CRS:</p>
 
 <ul>
-<li>datum: specifies the shape of the earth (the Ellipsoid) and how the coordinate system is anchored to the shape.</li>
+<li>datum: specifies the shape of the earth (the Ellipsoid) and fits the ellipsoid to the Earth</li>
 <li>units: e.g., meters, feet, decimal degrees</li>
-<li>origin: X-axis = Prime Meridian, Y-axis = Equator</li>
+<li>latitude of origin: Equator</li>
+<li>longitude of origin: Prime Meridian</li>
 </ul>
 
 </article></slide><slide class=''><hgroup><h2>Reference Ellipsoids</h2></hgroup><article  id="reference-ellipsoids">
@@ -194,7 +195,7 @@
 <li><strong>NAD83</strong>: North American Datum 1983. US Federal geographic data projects</li>
 </ul>
 
-<p>These global CRSs area identical for most purposes.</p>
+<p>For US locations, these global CRSs area identical for most purposes.</p>
 
 </article></slide><slide class=''><hgroup><h2>Projected CRS - Map Projects</h2></hgroup><article  id="projected-crs---map-projects">
 
@@ -247,7 +248,7 @@
 <li>Output Quality</li>
 <li>Number of addresses</li>
 <li>Data Privacy/security</li>
-<li>Cost</li>
+<li>Cost: free..freemium..premium</li>
 <li>Ease of use</li>
 </ul>
 
@@ -317,7 +318,11 @@
 <li>the Data Science Toolkit (DSTK) geocoding service</li>
 <li>Google&#39;s Geocoding service</li>
 </ul></li>
-<li><p>Also has functionality for creating maps</p></li>
+<li>Also has functionality for creating maps
+
+<ul>
+<li>and other cool stuff, like measuring distances</li>
+</ul></li>
 </ul>
 
 </article></slide><slide class=''><hgroup><h2>Geocoding with GGMAP</h2></hgroup><article  id="geocoding-with-ggmap-1">
@@ -343,7 +348,11 @@
 <li>fantastic accuracy, easy, fast,</li>
 <li>worldwide coverage, up to date</li>
 <li>limited to 2500 addresses per day</li>
-<li>other limits may also apply!</li>
+<li>other usage limits may also apply!
+
+<ul>
+<li><a href='http://developers.google.com/maps/terms' title=''>http://developers.google.com/maps/terms</a></li>
+</ul></li>
 </ul></li>
 </ul>
 
@@ -847,6 +856,7 @@ US Census Geocoder
 <li><a href='https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/ggmap/ggmapCheatsheet.pdf' title=''>https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/ggmap/ggmapCheatsheet.pdf</a></li>
 <li><a href='https://developers.google.com/maps/documentation/geocoding/intro' title=''>https://developers.google.com/maps/documentation/geocoding/intro</a></li>
 <li><a href='http://www.albany.edu/faculty/ttalbot/Geocoding_Lecture_2015.pdf' title=''>http://www.albany.edu/faculty/ttalbot/Geocoding_Lecture_2015.pdf</a></li>
+<li><a href='http://kartoweb.itc.nl/geometrics/' title=''>http://kartoweb.itc.nl/geometrics/</a></li>
 </ul>
 
 </article></slide><slide class=''><hgroup><h2>References</h2></hgroup><article  id="references-1">

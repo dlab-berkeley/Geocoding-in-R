@@ -2,6 +2,7 @@
 # Geocoding with GGMAP & the Google Geocoding Service
 # examples
 #
+library(ggplot2)
 library(ggmap)
 
 geocode("Barrows Hall, Berkeley, CA", source="google")
@@ -42,8 +43,9 @@ df3
 map <- get_map(location=c(lon=mean(df3$lon), lat=mean(df3$lat)), zoom=14)
 ggmap(map) +
   geom_point(aes(x = lon, y = lat), data=df3, size = 6, col="red" ) 
-
+##--------------------------------
 ## Geocode a file of addresses
+##--------------------------------
 # get the input data
 data <- read.csv(file="address_data/formatted/oak_liq_w_ids_types_headers.csv",stringsAsFactors=F)
 head(data)
