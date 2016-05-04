@@ -2,6 +2,22 @@
 # Geocoding with GGMAP & the Google Geocoding Service
 # examples
 #
+
+#--------------------------------------
+# libraries - 
+# that may be needed for this tutorial 
+# and how to install & load them:
+#--------------------------------------
+required.pkg <- c("htmlwidgets", "leaflet", "ggmap", "ggplot2","httr","acs","RJSONIO","RCurl","stringr","plyr", "rgeos","rgdal", "sp")
+pkgs.not.installed <- required.pkg[!sapply(required.pkg, function(p) require(p, character.only=T))]
+install.packages(pkgs.not.installed, dependencies=TRUE)
+
+# Load all libraries them all at once.
+lapply(required.pkg, library, character.only = TRUE) 
+
+#-------------------------------------------------------
+# Exploring Google Geocoder with ggmap package
+#-------------------------------------------------------
 library(ggplot2)
 library(ggmap)
 
@@ -43,6 +59,7 @@ df3
 map <- get_map(location=c(lon=mean(df3$lon), lat=mean(df3$lat)), zoom=14)
 ggmap(map) +
   geom_point(aes(x = lon, y = lat), data=df3, size = 6, col="red" ) 
+
 ##--------------------------------
 ## Geocode a file of addresses
 ##--------------------------------
@@ -76,9 +93,9 @@ head(geocoded_output) # check it
 # Google limits free geocoding to 2500 addresses per day
 geocodeQueryCheck() #how am I doing?
 
-#
+#---------------------------------------
 # Get FIPS code to link to census data
-#
+#---------------------------------------
 library(RCurl)
 library(RJSONIO)
 # FCC's Census Block Conversions API
