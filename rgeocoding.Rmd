@@ -10,7 +10,14 @@ output: ioslides_presentation
 Getting Started: Download the zipfile for this tutorial from
 https://github.com/dlab-geo/RGeocoding/archive/master.zip
 
+Then,
 
+- unzip the files
+- start RStudio
+- start a new script file and set your working directory to
+the location of the unzipped files
+- open the file scripts/ggmap_geocoding_examples.R 
+    - update the working directory
 
 ## Overview
 

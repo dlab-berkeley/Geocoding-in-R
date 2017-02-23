@@ -73,6 +73,8 @@ get_geocoded_addresses <- function(file_of_addresses) {
     # create temp file
     mytempfile <- tempfile()
     #write raw output to tempfile
+    # content(geocoded_addresses, "text", encoding = "UTF-8")
+
     capture.output(cat(content(geocoded_addresses)), file=mytempfile)
     #read the data into a data frame
     mylocs <- read.csv(mytempfile,header=FALSE, col.names = mycols)
