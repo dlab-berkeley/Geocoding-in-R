@@ -51,25 +51,13 @@ str(not_geocoded)
 
 # try again
 geoout2 <- geocode(not_geocoded$add2, output = "latlona", source = "google")
-#1: geocode failed with status ZERO_RESULTS, location = "4765 FAIR AVE REAR,Oakland 94619" 
-#2: geocode failed with status ZERO_RESULTS, location = "646 S RUE MARCEL,GRETNA, LA 70056" 
-#3: geocode failed with status ZERO_RESULTS, location = "1000 El Camino Real Box 9589,Atherton 94027" 
-#4: geocode failed with status ZERO_RESULTS, location = "2210 Kigali Pl,Dulles, VA 20189" 
-#5: geocode failed with status ZERO_RESULTS, location = "1901 Harder Rd. Mailbox #1030,HAYWARD 94542"
+# check and address any warnings()
 
 # Add output to input data
 geocoded2 <- data.frame(not_geocoded, geoout2)
 head(geocoded2) # check it
 
-# fix bad ones
-d1 <- "4765 FAIR AVE, Oakland CA 94619" 
-d2 <- "646 S RUE MARCEL, GRETNA, LA 70056" 
-d3 <- "1000 El Camino Real, Atherton CA 94027" 
-d4 <- "2210 Kigali Pl,Dulles, VA 20189" 
-d5 <- "1901 Harder Rd, HAYWARD CA 94542"
-
-geocode(d1, output = "latlona", source = "google")
-
+# fix bad ones identified via warnings()
 # try again
 geoout2 <- geocode(not_geocoded$add2, output = "latlona", source = "google")
 
