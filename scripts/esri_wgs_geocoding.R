@@ -27,7 +27,7 @@
 #               because the house number is interpolated from a range of numbers. "StreetName" is similar,
 #               but without the house number.
 
-geocodeSL <- function (address, token, postal = TRUE){
+geocode_one <- function (address, token, postal = TRUE){
   require(httr)
   
   # ESRI geolocator
@@ -82,7 +82,7 @@ geocodeSL <- function (address, token, postal = TRUE){
 #               because the house number is interpolated from a range of numbers. "StreetName" is similar,
 #               but without the house number.
 
-geocodeML_batch <- function(id, street, city, state, zip, token){
+geocode_many<- function(id, street, city, state, zip, token){
   require(httr)
   require(rjson)
   
@@ -98,7 +98,7 @@ geocodeML_batch <- function(id, street, city, state, zip, token){
   
   # make data frame
   adr_df <- data.frame(OBJECTID = id, 
-                       Street = street,
+                       Address = street,
                        City = city,
                        State = state,
                        Zip = zip)
@@ -148,7 +148,7 @@ myToken <- "enter your long ugly ESRI geocoding access token here"
 # ---------------------------
 # GEOCODE A SINGLE ADDRESS
 # ---------------------------
-geocode_output <-geocodeSL("1600 Pennsylvania Avenue NW, Washington, DC", myToken, postal = TRUE)
+# geocode_output <-geocode_one("1600 Pennsylvania Avenue NW, Washington, DC", myToken, postal = TRUE)
   
 # -----------------------------
 # GEOCODE A BATCH OF ADDRESSES
@@ -157,14 +157,14 @@ geocode_output <-geocodeSL("1600 Pennsylvania Avenue NW, Washington, DC", myToke
 # make up a data frame with some addresses:
 adr_df <- data.frame(
   ID = 1:3,
-  street = c('450 Serra Mall', '1600 Amphitheatre Pkwy', '1355 Market Street Suite 900'), 
-  city = c('Stanford', 'Mountain View', 'San Francisco'), 
-  state = 'CA', 
+  street = c('450 Serra Mall', '1600 Amphitheatre Pkwy', '1355 Market Street Suite 900'),
+  city = c('Stanford', 'Mountain View', 'San Francisco'),
+  state = 'CA',
   zip = c('94305', '94043', '94103'))
 
 
 # Batch geocode your dataframe of addresses with the following function
-adr_gc <- geocodeML_batch(adr_df$ID, adr_df$street, adr_df$city, adr_df$state, adr_df$zip, myToken)
+#adr_gc <- geocode_many(adr_df$ID, adr_df$street, adr_df$city, adr_df$state, adr_df$zip, myToken)
 
 # join back with original data
-merge(adr_df, adr_gc, by = "ID", all.x = T)
+#merge(adr_df, adr_gc, by = "ID", all.x = T)

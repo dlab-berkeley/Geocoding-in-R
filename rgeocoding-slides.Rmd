@@ -1,0 +1,896 @@
+---
+title: "Geocoding in R"
+author: "Patty Frontiera"
+date: "Fall 2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval=TRUE)
+```
+## Geocoding in R
+
+- Download the zipfile from 
+https://github.com/dlab-geo/RGeocoding
+
+- unzip the files
+
+- start RStudio
+
+- start a new R script file
+
+- set your working directory to the location of the unzipped files
+
+
+## Introductions
+
+About me
+
+About you - why are you  here?
+
+
+## Workshop Overview
+
+- Intro to Geocoding
+- Review of Geocoding tools
+- Geocoding in R with `ggmap`
+- Geocoing in R with `ESRI World Geocoding Service`
+
+
+## What is Geocoding
+
+Obtain geographic coordinates for a named place, street address, or zip code.
+
+<img src="https://developers.arcgis.com/rest/geocode/api-reference/GUID-FD609701-B9B5-49DB-BFD9-A936280A09C6-web.png"></img>
+
+## Types of places you can Geocode
+
+- state, city, building, 
+- street address or intersection, 
+- named place (eg mountain), landmark,
+- crime or other event location,
+- zip code, etc.
+
+## Why Geocode?
+
+- Display locations on a map
+
+- Link locations to other data
+
+- Spatial analysis
+    - Calculate distance, direction, area, etc.
+    - Identify patterns & relationships:
+        - clusters, outliers, neighbors
+
+## Geocoding Components
+
+`File of Input locations`
+
+- places of the same type in a standard format
+
+
+`A Geocoder`
+
+- Software and a reference database
+- The software compares input locations to database & returns matches
+
+
+`Output file`
+
+- Geographic coordinates for each matched input location
+- Metadata about the match
+
+## Reference Databases
+
+What types of data are available/ should be used for matching
+
+- Rooftop
+- Parcel
+- Street Addresses
+- Street Address Range
+- Street, City, Zipcode, State
+
+## Dual Address Range
+
+Where do you think the point for `275 5th St NE` would be located?
+
+<img width="600px" src="http://desktop.arcgis.com/en/arcmap/10.5/manage-data/geocoding/GUID-FB88E418-2955-45A2-934D-35182D3568C4-web.png"></img>
+
+## Dual Address Range
+
+Where do you think the point for `275 5th St NE` would be located?
+
+<img width="500px" src="./screenshots/dual_address_match.png"></img>
+
+
+## Parcel & Rooftop Reference Database
+
+Addresses would match to centroid of parcel or rooftop
+
+<img width="600px" src="http://desktop.arcgis.com/en/arcmap/10.5/manage-data/geocoding/GUID-57E832A9-5AC5-4F1A-AB16-3CF69A6C463D-web.png"></img>
+
+
+## Reference Database Quality
+
+<img width="700px" src="./screenshots/ref_data_quality.png"></img>
+
+## Geocode with maps.google.com
+
+<img src="screenshots/gmap_barrows.png" alt="google maps" style="width:650px;">
+
+*Try entering a city, landmark (Sather Gate), zipcode, address, etc.*
+
+
+## Geocoding Workflow
+
+- Consider your needs & options
+- Choose geocoder
+- Preprocess / clean your input data
+- Geocode
+- Evaluate your output
+- Postprocess as needed
+
+## Considerations
+
+- Geographic & temporal scope
+- Output type and quality
+- Volume / speed
+- Security
+- Costs of software and data
+- Ease of use
+
+
+## Geocoding Options
+
+- [US Census Geocoding Tool](https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?form)
+- [US Census Geocoding API](https://geocoding.geo.census.gov/geocoder/Geocoding_Services_API.pdf)
+ 
+- [Google Maps Geocoding API](https://developers.google.com/maps/documentation/geocoding/start)
+ 
+- [ESRI](https://docs.google.com/document/d/1JGMW0Lk3FnOPjGVxCQCFMT4SwHio239z-Yb8qdlEs6k/edit?usp=sharing)
+    - ArcGIS/ArcPro Desktop software
+    - ArcGIS Online Platform
+    - World Geocoding Service API 
+
+
+## Local Geocoding
+
+Needed when
+
+- Input data are confidential or too large
+
+
+You can use `ESRI ArcGIS/ArcPro` with local reference database
+
+    - you need to install local reference database
+    - limited to USA & Canada
+    - needs to be updated manually
+
+*Available in the D-Lab*
+
+
+# Geocoding Practice
+
+## Open these geocoding tools in 3 different browser windows
+
+[Google Maps](https://maps.google.com)
+
+[ESRI World Geocoding Service](https://developers.arcgis.com/features/geocoding/)
+
+[US Census Geocoding Tool](https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?form)
+
+
+## Compare results
+
+Geocode the following address in all three tools:
+
+`2625 Dana St, Berkeley, CA, 94704`
+
+
+# Geocoding in R
+
+## Geocoding with `ggmap`
+
+This has been the most common R package for geocoding.
+
+But, beginning July 2018 Google changed its pricing model.
+
+For API access you need to register a `credit card` with Google
+
+- $200 worth of free API services per month
+
+- That's 40,000 geocoded locations
+
+See the [Google Geocoding API Documentation](https://developers.google.com/maps/documentation/geocoding/start) for details
+
+## Geocoding with `ggmap`
+
+Worth the trouble because output is great quality.
+
+But only if you can afford the costs!
+
+Let's try it.
+
+## `ggmap`
+
+Load the library
+
+```{r, eval = T}
+library(ggmap)
+```
+
+## `ggmap`
+
+Register your API key
+```{r}
+#mykey <- "AIzaSyxxxxxxxxxxxxxxxxxxxxxxxxxOQyOFWrTw"
+mykey <- "AIzaSyDf-SZG8O4hj1c06VQ-k6hkBrOQyOFWrTw"
+register_google(key=mykey)
+
+```
+
+## Geocode a city
+
+```{r, eval=F}
+geocode("San Francisco, CA")
+```
+
+## Geocode a state
+```{r, eval=F}
+geocode("California")
+```
+
+## Geocode a landmark
+
+```{r, eval=F}
+geocode("Golden Gate Bridge")
+```
+
+## More detailed output
+```{r, eval=F}
+geocode("Golden Gate Bridge", output="more")
+```
+
+## Reverse Geocode
+
+```{r, eval=F}
+revgeocode(c(-122.4194,37.77493), output="more")
+```
+
+## Geocode an address
+
+```{r, eval=F}
+geocode_ouput <-geocode("2625 Dana St, Berkeley CA, 94704", output="more")
+```
+
+## "Batch" Geocode
+
+Geocode a set of places at once.
+
+Usually means you upload the entire file to the geocoder.  
+
+This is much faster but not supported by most online services
+
+With `ggmap::geocode` we serial process the set in one command.
+
+## Read in file of addesses
+
+```{r}
+# File of addresses
+address_data <- read.csv("address_data/oak_liquor_stores.csv", stringsAsFactors = F)
+
+# Take a look
+head(address_data)
+```
+
+## Format addresses
+
+Many online services want a single column with the address data, like
+`"2625 Dana St, Berkeley CA, 94704"`
+
+```{r}
+
+address_data$full_address <- paste0(address_data$street, ", " , 
+                                    address_data$city, ", " , 
+                                    address_data$state, " ", 
+                                    address_data$zip)
+
+# Take a look
+head(address_data, 3)
+```
+
+## Ready to geocode
+
+```{r}
+google_geocoded <- geocode(address_data$full_address, output = "more", 
+                           source = "google", key=mykey)
+```
+
+## View results
+
+Google returns a lot of metadata - see documentation
+```{r}
+head(google_geocoded)
+```
+
+## Add Geocoded results to input file
+
+```{r}
+# Add geocoded points to input data frame
+# - works because num rows & row order returned by geocoder the same
+address_data$glon <- google_geocoded$lon
+address_data$glat <- google_geocoded$lat
+
+head(address_data, 3)  # take a look
+```
+
+## Map results with Leaflet
+
+```{r}
+library(leaflet)
+
+point_map <- leaflet(address_data) %>%
+  addTiles() %>%   
+  addMarkers(lat=~glat, lng=~glon, 
+            popup=(paste0(address_data$name, "</br>",
+                          address_data$full_address)
+            )
+  )
+
+```
+
+## Display the map
+
+```{r}
+point_map
+```
+
+# ESRI World Geocoding Service
+
+## ESRI World Geocoding Service
+
+UC Berkeley has an ESRI Site licence
+
+So we can use the World Geocoding Service for free.
+
+This is a great value as geocoding is expensive!
+
+## ESRI World Geocoding Service
+
+In order to access the `World Geocoding Service` you need to first get an API key.
+
+ESRI calls this an `access token`.
+
+Instructions for this are on page 15 of [this document](https://docs.google.com/document/d/1JGMW0Lk3FnOPjGVxCQCFMT4SwHio239z-Yb8qdlEs6k/edit?usp=sharing).
+
+Let's try it!
+
+## ESRI WGS Access Token
+
+You can use the token below for this workshop. 
+
+`Tokens` are temporary
+
+- By default, a token expires in `2 hours`. 
+- Add an expiration parameter when requesting a token to receive one that is valid for a shorter or longer period of time. 
+- The maximum lifetime of a token is `14 days` even if you specify a longer expiration period.
+
+## ESRI WGS Token
+
+<img width="700px" src="./screenshots/esri_wgs_token.png"></img>
+
+## ESRI WGS Token
+
+Your token should look something like this:
+```{r}
+my_esri_token <- "iNFc0fq6bGlj6mUfptHgEGEjVeKZ0T5EPNAkVjgxBotwDaXxgykmwDNR0AkEvPi8Sh0QESWgt0IhmsbbO5UA3H-b2_T5yzhn1fW--WwD2O-7V2gbGCEaF4jg38dUQ7LhpTBT_XqYy0vV7Mw_e2hWUA.."
+
+```
+
+## Functions for Geocoding with the ESRI WGS
+
+Two functions: `geocode_one` and `geocode_many`
+
+These functions are long and ugly.
+
+You can reference them by `sourcing` this script.
+
+Take a look at the file on your computer
+
+```{r}
+source("./scripts/esri_wgs_geocoding.R")
+```
+
+## Geocode One Address
+
+```{r}
+geocode_one("2625 Dana St, Berkeley, CA, 94704", my_esri_token, 
+            postal = TRUE)
+```
+
+## Geocode Many
+
+```{r}
+# Batch geocode your dataframe of addresses with the following function
+esri_geocoded <- geocode_many(address_data$id, address_data$street, 
+                              address_data$city, address_data$state, 
+                              as.character(address_data$zip), my_esri_token)
+```
+
+## Take a look at results
+
+ESRI WGS also returns a lot of metadata
+```{r}
+head(esri_geocoded, 3)
+```
+
+## Add ESRI WGS Results to input data
+
+```{r}
+address_data <- merge(address_data, esri_geocoded[c("ID","lon","lat")], 
+                      by.x="id",by.y = "ID", all.x = T)
+
+# Take a look
+head(address_data, 3)
+```
+
+## Map geocoded data with `Leaflet`
+
+```{r}
+point_map <- leaflet() %>%
+  addTiles() %>%   
+  addMarkers(lat=address_data$glat, lng=address_data$glon, 
+            popup=(paste0(address_data$name, "</br>",
+                          address_data$full_address)) 
+            ) %>%   
+  addCircleMarkers(lat=address_data$lat, lng=address_data$lon,
+            color="black",fillColor="red",
+            popup=(paste0(address_data$name, "</br>",
+                          address_data$full_address))
+  )
+```
+
+## Display the map
+
+```{r}
+point_map
+```
+
+
+## Geocoding Historic Locations
+
+Good question!
+
+
+##  Save output to file
+
+You don't want to re-geocode!
+```{r, eval=F}
+write.csv(google_geocoded,file="output/address_data_geocoded_google.csv", 
+          row.names=FALSE)
+
+write.csv(esri_geocoded,file="output/address_data_geocoded_esri.csv", 
+          row.names=FALSE)
+
+```
+
+ 
+# Geocoding Results
+
+## Assessing Output Quality
+
+- Map the results
+
+- Examine the range of coordinates
+    - CA: -124, 32, -114, 42
+
+- Review output data & metadata
+    - specific to the geocoder
+
+
+## Geocoding Output
+
+- With a little preprocessing most reliable geocoders will be able to geocode 80% or more of your addresses within a street block of the actual location.
+    - based on my my experience!
+    - assumes US addresses.
+
+- Cleaning and standardizing addresses can be a lot of work!
+    - unlikely to get it perfect
+
+## Standardize Addresses
+- provide all components
+- remove unnecessary components
+- remove duplicates 
+- remove extra spaces or commas
+- remove odd characters like “#” “/”, “@”
+- standardize capitalization
+
+## Standardize Addresses
+
+- Intersections
+    - Corner of Main and Long Ave should be **Main & Long**
+- Numbered Streets
+    - Fourth St should be **4th St**
+- Directional Prefixes
+    - North, No, N., etc should be **N**
+- Apartment numbers and letters
+    - Remove them!
+- Use **PO Box**
+    - unless you have the address!
+
+## Use Standard Abbreviations
+|Use|For These|
+|----------------|----------------------------|
+|HWY|Highway|
+|LN|Lane|
+|DR| Drive|
+|EXPY|Expressway|
+
+ 
+## Problems in Reference Database
+- Incorrect street ranges
+- Inaccurate or low quality features 
+- Inaccurate feature attributes
+
+- Missing streets
+- Address changes
+
+## Output Quality &  Population Density
+<img src="screenshots/popdens.png" alt="lonlat" style="width:450px;">
+
+# Questions?
+
+# Linking to Census Data
+
+## Linking to Census Data
+
+The [US Census Bureau](https://www.census.gov) has been collecting data about the US population since 1790!
+
+Survey data from the decennial census and the 5 year American Community Survey are two of the most commonly used databases.
+
+Publicly available census data are aggregated to census geographies.
+
+## Census Geographies
+
+<img width="700px" src="./screenshots/census_geo.png"></img>
+
+## Census Data
+
+Census data are linked to Census geographies by IDs called `FIPS Codes` or `GEOIDs`
+
+<img width="700px" src="./screenshots/social_explorer.png"></img>
+
+## Census FIPS Codes / GEOIDs
+
+<img width="500px" src="./screenshots/fips_code.png"></img>
+
+## Linking points to census data
+
+In order to link geocoded points to census data you need to get the census geographic FIPS codes for the points.
+
+There are a number of ways to do this.
+
+## Important Note
+
+Census geographies can change every 10 years due to changes in the population.
+
+For example,
+
+- if the population of an area increases, census tracts can split
+
+- if the population of an area decreases, tracts can merge
+
+This makes comparisons between censuses more complicated.
+
+- You need to get the correct census identifiers for the year(s) of interest
+
+## US Census Geocoding Service
+
+If you geocode with the [US Census Geocoding Service](https://geocoding.geo.census.gov/geocoder/) you can get the census IDs from the geocoder.
+
+Try that with "2625 Dana St, Berkeley, CA, 94704"
+
+## FCC Census Block API
+
+Provides an programming interface for fetching the 2010 Block FIPS code
+
+[https://geo.fcc.gov/api/census/#!/block/get_block_find](https://geo.fcc.gov/api/census/#!/block/get_block_find)
+
+```
+https://geo.fcc.gov/api/census/block/find?latitude=37.85256200000
+       &longitude=-122.2736340&showall=true&format=json>
+```
+
+## FCC Block API
+
+Source the script file to load the function
+
+`latlon2fips`
+
+Then try it  with `-122.273634, 37.852562`
+
+```{r}
+source("./scripts/fcc_latlon2fips.R")
+
+# test one coordinate pair
+latlon2fips(latitude=37.852562, longitude=-122.273634)
+
+```
+
+## Get FIPs for all of our geocoded addresses
+
+Apply the `latlon2fips` function to all rows in our dataframe
+
+Use the coordinates returned by the Google Geocoding API
+```{r}
+
+address_data$fips<- mapply(latlon2fips, address_data$glat, 
+                           address_data$glon)
+
+# Take a look
+head(address_data, 3)
+
+```
+
+## Get FIPS spatially
+
+We can download geographic data from the Census
+
+and then spatially join the geocoded points to the census geographic data
+
+to get the FIPS codes for each point
+
+## Get FIPS spatially
+
+We can use the `tigris` package to download census geographic data.
+
+```{r}
+library(sp)
+library(tigris)
+```
+
+## `tigris`
+
+Set tigris options & download data
+
+```{r}
+options(tigris_class = "sp")   # options are sp or sf
+options(tigris_use_cache = F)  # set to true to save locally
+
+tracts2010 <- tracts(state = '06', county= '001', cb = F, year=2010)
+
+tracts2000 <- tracts(state = '06', county= '001', cb = F, year=2000)
+
+```
+
+## Plot the tracts
+
+```{r}
+plot(tracts2000, border="red")
+plot(tracts2010, add=T)
+```
+
+
+## Make address points spatial
+
+Use the `sp` library to convert the address_data to a `SpatialPointsDataFrame`
+
+Then, set the `coordinate reference system`, or `CRS` to be the same as that of the census tracts.
+
+```{r}
+address_data_sp<- address_data  #make copy
+coordinates(address_data_sp) <-c("glon", "glat")
+proj4string(address_data_sp) <- CRS(proj4string(tracts2010))
+```
+
+## A word about Geographic Coordinates
+
+The Google Geocoding API returns geographic coordinates referenced to the `World Geodetic System of 1984` or `WGS84`.
+
+Census geographic data are referenced to the `North American Datum of 1983` or `NAD83`. 
+
+These two geographic CRSs can differ by up to 1 meter in the continental USA.
+
+It's up to you to decide if this could impact your spatial analysis.
+
+## Plot the tracts and points
+
+```{r}
+plot(tracts2000, border="red")
+plot(tracts2010, add=T)
+points(address_data_sp, col="green")
+```
+
+## Spatial Overlay
+
+The `sp::over` function spatially compares the two input spatial objects and returns the data values for the census tract in which each point is located.
+
+```{r}
+fips2000 <- over(address_data_sp, tracts2000)
+fips2010 <-over(address_data_sp, tracts2010)
+
+# Uncomment to take a look at the output
+#head(fips2000, 3)
+#head(fips2010, 3)
+```
+
+
+## Add the FIPS to the address dataframe
+
+```{r}
+address_data$GEOID10 <- fips2010$GEOID10
+address_data$CTIDFP00 <- fips2000$CTIDFP00
+
+# head(address_data)
+
+```
+
+
+## Questions?
+
+Discuss the 3 methods for getting the census FIPS codes for the geocoded points.
+
+1. When geocoding
+
+2. Using an API
+
+3. Using spatial overlay
+
+
+# Fetching Census data
+
+## Fetching Census data
+
+We can take this one step further and retrieve census data for the census tracts of interest.
+
+We do this with the `tidycensus` package
+
+## Get Census Data
+```{r}
+library(tidycensus)
+
+# Load census key - Patty's key, apply for your own!
+my_census_api_key <- "f2d6f4f743545d3a42a67412b05935dc7712c432"
+
+# Make tigris aware of census key
+census_api_key(my_census_api_key)
+```
+
+## Identify state(s) and county(s) of interest
+
+```{r}
+my_states<- c("06") # CA
+my_counties <- c("001") # Alameda County
+```
+
+## Identify ACS census variables
+
+Our scenario of interest is to identify liquor stores in census tracts with a relatively high population of minors.
+
+So, we want to find the census variables for `total population` and `population under 18`
+
+```{r}
+cenvar_table <-load_variables(year=2016, dataset = "acs5", cache=T)
+
+# Take a look at the data frame to find the names of census tables
+# This will give you the table and variable codes
+# Use "View(cenvar_table)" and filter within the table to get the codes for a specific variable
+
+# View(cenvar_table) 
+
+```
+
+## Census Variables
+
+Indentify the tables and variables of interest in the 5 year ACS Data (2012-2016)
+```{r}
+pop_total <- "B01001_001E"
+pop_under18 <- "B09001_001E"
+```
+
+## Fetch Data of interest
+
+```{r}
+pop_acs5_2016 <-get_acs(geography = "tract", 
+                        variables = c(pop_total,pop_under18), 
+                       year=2016, survey="acs5",
+                       state = my_states, county = my_counties,
+                       geometry = F)
+
+#head(pop_acs5_2016)
+```
+
+## Reshape the data
+
+Load libraries
+```{r}
+library(tidyr)
+library(dplyr)
+```
+
+## Reshape the data
+
+```{r}
+
+# Select the columnbs of interest
+# and put `totpop` and `under18` in their own columns
+pop2 <- pop_acs5_2016 %>%
+  select("GEOID","variable","estimate") %>%
+  spread(key=variable, value=estimate)
+
+# Rename columns
+colnames(pop2)<-c("GEOID10","totpop","under18")
+head(pop2)
+```
+
+## Join population data to Address data 
+
+```{r}
+
+pop2$pct_under18 <- round((pop2$under18 / pop2$totpop) * 100, 1)
+address_data2 <- merge(address_data, pop2, by="GEOID10", all.x=T)
+
+# Take a look - what do you think?
+#head(address_data2)
+```
+
+## Join Population data to Census tracts to map
+
+We just joined the census data to the address points.
+
+We can also join it to the census tracts.
+
+
+```{r}
+tracts2010 <- merge(tracts2010, pop2, by="GEOID10")
+
+# Take a look:
+# head(tracts2010@data)
+```
+
+Note: this is `sp::merge` so we do not reference the `@data` slot!
+
+## Map the data
+
+```{r}
+quantColors <- colorQuantile("Reds", tracts2010$pct_under18, n=5)
+
+point_map <- leaflet() %>%
+  addTiles() %>%   
+  addPolygons(data=tracts2010, 
+              color="white", 
+              weight=1, 
+              opacity=0.5,
+              fillColor= ~quantColors(pct_under18),
+              fillOpacity = 0.75, 
+              popup = paste0("<b>Percent under 18:</b> ", tracts2010$pct_under18, "%")) %>%
+  addMarkers(data=address_data, lat=~glat, lng=~glon, 
+            popup=(paste0(address_data$name, "</br>",
+                          address_data$full_address)
+            )
+  )
+```
+
+## Display the map
+
+```{r}
+point_map
+```
+
+## Save the output data
+```{r}
+#write.csv(address_data2, file="output/address_data_geocoded2.csv", row.names=F)
+#writeOGR(tracts2010, dsn="./output", layer="tracts2010", driver="ESRI Shapefile")
+```
+
+
+# Questions?
+
+## Getting Help
+
+- Review the documents and websites linked in this tutorial
+
+- Sign up for a consult!
+
+
+# Thank You!
