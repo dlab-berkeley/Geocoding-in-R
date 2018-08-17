@@ -223,8 +223,7 @@ library(ggmap)
 
 Register your API key
 ```{r}
-#mykey <- "AIzaSyxxxxxxxxxxxxxxxxxxxxxxxxxOQyOFWrTw"
-mykey <- "AIzaSyDf-SZG8O4hj1c06VQ-k6hkBrOQyOFWrTw"
+mykey <- "AIzaSyxxxxxxxxxxxxxxxxxxxxxxxxxOQyOFWrTw"
 register_google(key=mykey)
 
 ```
