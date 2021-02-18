@@ -7,8 +7,7 @@ library(ggmap)
 library(purrr)
 setwd("./")
 
-# PATTY's google maps API key - don't share!!! 
-# You can use for small amounts of data (<2000 addresses per day) but I will turn off if problems
+# Replace with your google maps API key - don't share!!! 
 register_google("YOUR_GOOGLE_API_KEY_HERE")
 
 # Test geocoding
