@@ -130,6 +130,13 @@ latlon2fips(NA,NA)
 # Census GEOIDS for each lat/lon pair from FCC
 sites$census_geoids <- mapply(latlon2fips,sites$lat,sites$lon)
 
+head(sites)
 # Write results to file
 write.csv(sites, file="geocoded_ouput_data.csv", row.names = F)
+
 #
+
+#static map with ggmap
+# use qmplot to make a scatterplot on a map
+qmplot(lon, lat, data = sites, maptype = "toner-lite", color = I("red"))
+
